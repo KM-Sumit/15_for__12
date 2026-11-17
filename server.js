@@ -2,6 +2,7 @@
 // service-worker.js, the manifest and the version file must never be cached by Cloudflare or browsers,
 // or users keep running an old app (and an old worker) for hours after a deploy.
 import http from 'node:http';
+import './scripts/db-ipv4-first';
 import { handler } from './build/handler.js';
 
 // Password-reset links and the Google redirect URI are built from ORIGIN; refuse to boot without it.

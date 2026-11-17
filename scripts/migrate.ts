@@ -1,4 +1,5 @@
 // Applies drizzle/ migrations at container start (production has no drizzle-kit).
+import './db-ipv4-first';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import postgres from 'postgres';

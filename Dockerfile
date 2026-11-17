@@ -19,7 +19,7 @@ RUN bun pm cache rm && bun install --frozen-lockfile --production --ignore-scrip
 COPY --from=build /app/build ./build
 COPY server.js ./server.js
 COPY drizzle ./drizzle
-COPY scripts/migrate.ts ./scripts/
+COPY scripts/migrate.ts scripts/db-ipv4-first.ts ./scripts/
 COPY src ./src
 EXPOSE 3000
 HEALTHCHECK --interval=10s --timeout=5s --start-period=120s --retries=3 CMD bun -e "fetch('http://127.0.0.1:3000/healthz').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"
