@@ -1,6 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { homeFor, setActiveInstitute, startSession } from '#lib/server/auth/session';
 import { joinInstituteBySlug, peekInstituteBySlug, signUpStudent } from '#lib/features/auth/server/password';
+import { restoreListedAdmin } from '#lib/features/auth/server/service';
 import { DomainError } from '#lib/server/http';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -22,13 +23,15 @@ export const actions: Actions = {
 			// Validate the join code before creating anything, so a bad code costs the student nothing.
 			if (code) await peekInstituteBySlug(code);
 			const user = await signUpStudent({ name, email, password });
+			// A listed ADMIN_EMAILS address signing up owns the platform: promote before the first redirect
+			// so it lands on its real home (e.g. /super), not the student dashboard.
+			const restored = await restoreListedAdmin(user);
 			if (code) {
-				const instituteId = await joinInstituteBySlug(user.id, code);
+				const instituteId = await joinInstituteBySlug(restored.id, code);
 				setActiveInstitute(event.cookies, instituteId);
 			}
-			await startSession(event.cookies, user);
-			// Flow: signup → student dashboard → institute code (added automatically on the dashboard itself).
-			redirect(303, '/app');
+			await startSession(event.cookies, restored);
+			redirect(303, homeFor(restored));
 		} catch (e) {
 			if (e instanceof DomainError) return fail(e.status, { ...back, message: e.message });
 			throw e;

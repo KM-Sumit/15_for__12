@@ -201,7 +201,7 @@ export async function signUpStudent(raw: { name: string; email: string; password
 	if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new DomainError(400, 'Enter a valid email address.');
 	if (raw.password.length < 8) throw new DomainError(400, 'Password must be at least 8 characters.');
 	const [existing] = await db().select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
-	if (existing) throw new DomainError(409, 'An account with this email already exists. Sign in instead.');
+	if (existing) throw new DomainError(409, 'An account with this email already exists. Sign in on the login page with the password your institute gave you.');
 	const [created] = await db()
 		.insert(users)
 		.values({ email, name, passwordHash: await hashPassword(raw.password), role: 'student' })

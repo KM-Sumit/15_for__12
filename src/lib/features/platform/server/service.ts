@@ -18,6 +18,7 @@ import {
 	users
 } from '#lib/server/db/schema';
 import { DomainError } from '#lib/server/http';
+import { adminEmails } from '#lib/server/env';
 import { MODULE_KEYS, type ModuleKey } from '#lib/features/platform/modules';
 import { audit, moduleMatrix, setModule } from '#lib/server/tenant/context';
 import { createTenantAccount, resetUserPassword } from '#lib/features/auth/server/password';
@@ -266,6 +267,11 @@ export async function updateInstitutePlan(instituteId: string, planId: string | 
 
 export async function createAdmin(instituteId: string, raw: unknown, actorId: string | null) {
 	const input = parse(adminAccountInput, raw);
+	// A listed ADMIN_EMAILS address would be promoted to platform super admin on its very next request
+	// (restoreListedAdmin), which strips the institute attachment — refuse it here instead of silently
+	// creating an account that can never reach this institute's console.
+	if (adminEmails().has(input.email.toLowerCase()))
+		throw new DomainError(409, 'This email is a platform super admin (ADMIN_EMAILS). It signs in to the platform console, not an institute. Use a different email for institute staff.');
 	const user = await createTenantAccount({ instituteId, ...input });
 	await audit({ actorId, instituteId, action: 'admin.create', target: user.email, meta: { role: input.role } });
 	return user;

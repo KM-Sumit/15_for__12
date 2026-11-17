@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { ArrowLeft, Building2, Check, Globe, KeyRound, LockKeyhole, Palette, Plus, Power, Save, ShieldCheck, Trash2, UserPlus, X } from '@lucide/svelte';
+	import { ArrowLeft, Building2, Check, Copy, Globe, KeyRound, LockKeyhole, Palette, Plus, Power, Save, ShieldCheck, Trash2, UserPlus, X } from '@lucide/svelte';
 	import { moduleLabel } from '#lib/features/platform/modules';
 	import { toast } from '#lib/components/ui/toast.svelte';
 	import { untrack } from 'svelte';
@@ -8,6 +8,7 @@
 	let { data, form } = $props();
 	let busy = $state(false);
 	let adding = $state(false);
+	let copied = $state(false);
 	$effect(() => {
 		const message = form?.message;
 		untrack(() => {
@@ -15,6 +16,15 @@
 		});
 	});
 	const i = $derived(data.institute);
+	const copyCode = async () => {
+		try {
+			await navigator.clipboard.writeText(i.slug);
+			copied = true;
+			setTimeout(() => (copied = false), 2000);
+		} catch {
+			toast('Could not copy. Select the code and copy it manually.', 'error');
+		}
+	};
 	const activeModules = $derived(data.modules.filter((m) => m.enabled).length);
 	const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : 'Never');
 </script>
@@ -43,6 +53,23 @@
 			</form>
 		</div>
 	</header>
+
+	<section class="card card-pad rise code-card" aria-label="Institute code">
+		<div class="code-head">
+			<span class="code-icon"><KeyRound /></span>
+			<div>
+				<h2 class="card-title">Institute code</h2>
+				<p class="muted small">Students sign in, then enter this code on their dashboard — or open the join link directly.</p>
+			</div>
+		</div>
+		<div class="code-line">
+			<code class="code-pill">{i.slug}</code>
+			<button class="btn btn-secondary btn-sm" type="button" onclick={copyCode}>
+				{#if copied}<Check /> Copied{:else}<Copy /> Copy{/if}
+			</button>
+			<a class="btn btn-ghost btn-sm" href="/i/{i.slug}" target="_blank" rel="noopener">Student join link</a>
+		</div>
+	</section>
 
 	<section class="kpis rise" style="--i: 1" aria-label="Institute numbers">
 		<article><span>Students</span><strong>{data.stats.students}</strong></article>
@@ -110,6 +137,7 @@
 				<label class="field"><span class="label">Email</span><input class="input" name="email" type="email" required /></label>
 				<label class="field"><span class="label">Role</span><select class="select" name="role"><option value="admin">Admin</option><option value="teacher">Teacher</option></select></label>
 				<label class="field"><span class="label">Password</span><input class="input" name="password" type="password" minlength="8" required autocomplete="new-password" /></label>
+				<p class="tiny muted span-all">This person signs in on the login page (/login) with this email and password. The signup link is only for students.</p>
 				<div class="span-all end"><button class="btn btn-primary"><Plus />Create account</button></div>
 			</form>
 		{/if}
@@ -220,6 +248,12 @@
 	.pw { display: flex; gap: .3rem; margin-top: .35rem; min-width: 13rem; }
 	.pw .input { flex: 1; min-width: 0; }
 	.danger { color: hsl(var(--danger)); }
+	.code-card { display: grid; gap: .8rem; }
+	.code-head { display: flex; gap: .8rem; align-items: flex-start; }
+	.code-icon { display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: .8rem; background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); flex-shrink: 0; }
+	.code-icon :global(svg) { width: 1.2rem; height: 1.2rem; }
+	.code-line { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+	.code-pill { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 600; background: hsl(var(--muted)); padding: .45rem .8rem; border-radius: .6rem; letter-spacing: .02em; }
 	.audit { display: grid; gap: .35rem; }
 	.audit li { padding: .4rem 0; border-bottom: 1px solid hsl(var(--border)); }
 	.audit li:last-child { border-bottom: 0; }
