@@ -1,0 +1,32 @@
+services:
+  # Render Blueprint: creates the web service from the Dockerfile in this repo.
+  # Deploy → "New +" → Blueprint → pick this repo. Env vars marked sync:false
+  # are asked in the dashboard — paste the values there.
+  - type: web
+    name: edusphere
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      # Supabase session pooler (port 5432) — the app runtime needs session affinity for RLS.
+      - key: DATABASE_URL
+        sync: false
+      # Same value is fine: the session pooler keeps session-level locks working.
+      - key: MIGRATION_DATABASE_URL
+        sync: false
+      # Public URL of this Render service, e.g. https://<service>.onrender.com
+      - key: ORIGIN
+        sync: false
+      - key: AUTH_SECRET
+        generateValue: true
+      # Comma-separated Gmail list; the first Google sign-in from this list becomes platform super admin.
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3-flash-preview
+      # Payments happen on the institute's external payment page — checkout stays off.
+      - key: ENABLE_ONLINE_CHECKOUT
+        value: "false"

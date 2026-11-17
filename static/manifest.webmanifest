@@ -1,0 +1,25 @@
+{
+	"name": "EduSphere · Exam preparation platform",
+	"short_name": "EduSphere",
+	"description": "Multi-tenant exam preparation workspace for coaching institutes: tests, question bank, study materials, results and student management.",
+	"lang": "en-IN",
+	"display": "standalone",
+	"start_url": "/app",
+	"scope": "/",
+	"background_color": "#f4f6f8",
+	"theme_color": "#f4f6f8",
+	"icons": [
+		{
+			"src": "/brand/uci-mark.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "/brand/uci-mark.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	]
+}

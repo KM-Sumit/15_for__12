@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="Theme.Uci.Launcher" parent="Theme.Uci">
+		<item name="android:windowBackground">@color/theme</item>
+		<item name="android:windowSplashScreenBackground">@color/theme</item>
+		<item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+		<item name="android:windowSplashScreenIconBackgroundColor">@color/theme</item>
+	</style>
+</resources>

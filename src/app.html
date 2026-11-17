@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en-IN">
+	<head>
+		<meta charset="utf-8" />
+		<script nonce="%sveltekit.nonce%">
+			// Platform + theme before first paint, so platform chrome and motion never flash.
+			// iPadOS reports "Macintosh"; touch points give it away. Mirrors src/lib/client/platform.ts.
+			(function () {
+				var ua = navigator.userAgent;
+				var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+				document.documentElement.dataset.platform = ios ? 'ios' : /Android/.test(ua) ? 'android' : 'desktop';
+				var t = null;
+				try { t = localStorage.getItem('theme'); } catch (_) {}
+				var dark = t === 'dark' || (t !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+				document.documentElement.classList.toggle('dark', dark);
+				try { if (window.UciChrome && window.UciChrome.setDark) window.UciChrome.setDark(dark); } catch (_) {}
+			})();
+		</script>
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+		<meta name="description" content="EduSphere: a multi-tenant exam preparation platform for coaching institutes." />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-title" content="EduSphere" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+		<meta name="theme-color" content="#f4f6f8" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#0f1218" media="(prefers-color-scheme: dark)" />
+		<link rel="manifest" href="/manifest.webmanifest" />
+		<link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
+		<link rel="apple-touch-icon" href="/brand/uci.png" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..100,500..800&family=Figtree:wght@400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+			rel="stylesheet"
+		/>
+		%sveltekit.head%
+	</head>
+	<body class="min-h-screen antialiased" data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

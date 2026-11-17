@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /admin
+Disallow: /api/
+Disallow: /auth/
+Disallow: /onboarding
+Disallow: /login
+
+Sitemap: https://ucisarthi.in/sitemap.xml

@@ -1,0 +1,75 @@
+plugins {
+	id 'com.android.application'
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+if (keystorePropertiesFile.exists()) {
+	keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+	namespace 'com.uci.examprep'
+	compileSdk 36
+	buildToolsVersion '36.0.0'
+
+	defaultConfig {
+		applicationId 'com.uci.examprep'
+		minSdk 24
+		targetSdk 36
+		versionCode 13
+		versionName '1.4.3'
+		buildConfigField 'boolean', 'PREVENT_SCREENSHOTS', (findProperty('uci.preventScreenshots') ?: 'true').toString()
+	}
+
+	buildFeatures {
+		buildConfig true
+	}
+
+	signingConfigs {
+		release {
+			if (keystorePropertiesFile.exists()) {
+				storeFile rootProject.file(keystoreProperties['storeFile'])
+				storePassword keystoreProperties['storePassword']
+				keyAlias keystoreProperties['keyAlias']
+				keyPassword keystoreProperties['keyPassword']
+			}
+		}
+	}
+
+	buildTypes {
+		release {
+			minifyEnabled true
+			shrinkResources false
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+			signingConfig signingConfigs.release
+		}
+		debug {
+			applicationIdSuffix ''
+			signingConfig signingConfigs.release
+		}
+	}
+
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_17
+		targetCompatibility JavaVersion.VERSION_17
+	}
+
+	lint {
+		abortOnError false
+	}
+
+	androidResources {
+		noCompress += ['mp4']
+	}
+}
+
+dependencies {
+	implementation 'androidx.work:work-runtime:2.10.0'
+	// Firebase Cloud Messaging — enables background push even when app is killed
+	implementation platform('com.google.firebase:firebase-bom:33.9.0')
+	implementation 'com.google.firebase:firebase-messaging'
+}
+
+// Apply Google Services plugin AFTER dependencies (required by Firebase)
+apply plugin: 'com.google.gms.google-services'

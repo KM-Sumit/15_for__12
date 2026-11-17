@@ -1,0 +1,58 @@
+node_modules
+
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Prototype archive and local secrets
+*.zip
+legacy/password.md
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Playwright MCP snapshots (may hold secrets)
+.playwright-mcp/
+shots/
+
+# Android TWA build
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/*.keystore
+android/keystore.properties
+android/*.apk
+android/app/src/main/assets/www/
+# Firebase secrets — never commit these
+android/app/google-services.json
+*firebase-adminsdk*.json
+
+# Local user-space Postgres (no Docker)
+.local-pg/
+
+# Uploads when Cloudflare R2 is not configured
+.local-uploads/
+
+# Heavy build artifacts / raw media — deployment needs none of these
+# (app uses only static/media/intro.mp4; APK download URL is external)
+assets/intro-source.mp4
+static/intro.mp4
+static/intro-short.mp4
+static/uci.apk
+android/uci-release.aab
