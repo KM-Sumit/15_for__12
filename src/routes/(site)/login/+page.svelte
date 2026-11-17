@@ -63,7 +63,8 @@
 			<p class="alert alert-warning mt-4">Google sign-in is not configured on this server.</p>
 		{/if}
 
-		<p class="tiny muted mt-5 text-center">Students, admins — sab isi login se sign in hote hain. Use the email and password your institute gave you.</p>
+		<p class="tiny muted mt-5 text-center">Students and admins sign in here with the email and password your institute gave you.</p>
+		<p class="tiny muted mt-2 text-center">New student? <a class="link" href="/signup">Create an account</a></p>
 	</div>
 </div>
 
